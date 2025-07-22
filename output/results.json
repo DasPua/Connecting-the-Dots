@@ -1,0 +1,98 @@
+[
+    {
+        "title": "an introduction to operating systems",
+        "outline": []
+    },
+    {
+        "title": "",
+        "outline": [
+            {
+                "h1": "process management:",
+                "page": 6
+            }
+        ]
+    },
+    {
+        "title": "die 77 bull-0 9733le hlsh (eg",
+        "outline": []
+    },
+    {
+        "title": "meno& 5 sharrd ipc pyocess essa91 ryocess _ gassins",
+        "outline": []
+    },
+    {
+        "title": "transitions from us to ks done by software interrupts_ system calls are implemented in €. ask dsw fv cndls",
+        "outline": [
+            {
+                "h1": "open_ close read: wrile. reposition file attributes_ set file attributes get",
+                "page": 9
+            },
+            {
+                "h1": "createprocess() exitprocess() waitforsingleobject()",
+                "page": 9
+            },
+            {
+                "h1": "types of system calls:",
+                "page": 9
+            },
+            {
+                "h1": "types of system calls:",
+                "page": 9
+            }
+        ]
+    },
+    {
+        "title": "t oag (e qm@n file ) tvo comm devi (",
+        "outline": []
+    },
+    {
+        "title": "pes of system calls: process control end; aooi t load execute create process terminate process get process attributes, set process attributes wait for ta wait event; signal event allocate and free mnemory ) (e file management create file delete file omagemen - fule) lime comm , devi .",
+        "outline": []
+    },
+    {
+        "title": "",
+        "outline": []
+    },
+    {
+        "title": "lec-8: storage devices basics",
+        "outline": []
+    },
+    {
+        "title": "lec-1o: process states_ process queues",
+        "outline": []
+    },
+    {
+        "title": "lecil: swapping _ context-switching orphan process [zombie process",
+        "outline": []
+    },
+    {
+        "title": "lec il: swapping context-switching l orphan process [zombie process iwadding",
+        "outline": [
+            {
+                "h1": "conditional variable",
+                "page": 22
+            }
+        ]
+    },
+    {
+        "title": "lec-2o: the dining philosophers problem",
+        "outline": [
+            {
+                "h1": "lec 2i: deadlock part-1",
+                "page": 25
+            },
+            {
+                "h1": "lec-22: deadlock part-2",
+                "page": 27
+            }
+        ]
+    },
+    {
+        "title": "page_ table when some pages_are not in memory",
+        "outline": []
+    },
+    {
+        "title": "page_ table when some pages_are not in memory",
+        "outline": []
+    }
+]
