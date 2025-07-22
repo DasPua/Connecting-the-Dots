@@ -4,3 +4,5 @@ pdf2image
 ultralytics
 opencv-python
 torch
+torchvision
+torchaudio
