@@ -1,0 +1,6 @@
+os
+easyocr
+pymupdf
+pdf2image
+ultralytics
+opencv-python
