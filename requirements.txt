@@ -1,4 +1,3 @@
-os
 easyocr
 pymupdf
 pdf2image
