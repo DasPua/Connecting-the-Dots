@@ -1,7 +1,5 @@
-import pytesseract
 import PIL as image
 from concurrent.futures import ProcessPoolExecutor
-from torch.multiprocessing import Process
 import easyocr
 import os
 
