@@ -4,3 +4,4 @@ pymupdf
 pdf2image
 ultralytics
 opencv-python
+torch
