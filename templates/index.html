@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF Outline Extractor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f4f6f9;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    input[type="file"] {
+      margin: 20px 0;
+      display: block;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload PDF to Extract Outline</h2>
+    <form id="uploadForm">
+      <input type="file" id="pdfFile" accept="application/pdf" required>
+      <button type="submit">Upload & Extract</button>
+    </form>
+
+    <div id="result">
+      <h3>Result:</h3>
+      <div id="outputArea">Upload a PDF to see results.</div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("pdfFile");
+      const outputArea = document.getElementById("outputArea");
+      outputArea.innerHTML = "Processing...";
+
+      if (!fileInput.files.length) {
+        outputArea.innerHTML = '<p class="error">Please select a file.</p>';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      try {
+        const res = await fetch("/extract_outline", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          outputArea.innerHTML = `<p class="error">Error: ${data.error || 'Unknown error occurred.'}</p>`;
+          return;
+        }
+
+        outputArea.innerHTML = `
+          <strong>Title:</strong> ${data.title || "N/A"}<br>
+          <strong>Processing Time:</strong> ${data.processing_time.toFixed(2)}s<br>
+          <strong>Detection Time:</strong> ${data.detection_time.toFixed(2)}s<br>
+          <strong>OCR Time:</strong> ${data.ocr_time.toFixed(2)}s<br><br>
+          <strong>Outline:</strong><br>
+          <ul>
+            ${data.outline.length > 0 ? data.outline.map(item => `
+              <li><strong>${item.level}</strong>: ${item.text} (Page ${item.page})</li>
+            `).join("") : "<li>No outline found.</li>"}
+          </ul>
+        `;
+      } catch (err) {
+        outputArea.innerHTML = `<p class="error">Failed to process file. Check server logs.</p>`;
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
