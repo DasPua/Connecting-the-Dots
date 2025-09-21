@@ -18,7 +18,7 @@ EXPOSE 5000
 
 # Set default command to run the app
 CMD ["python", "app.py"]
-=======
+
 RUN pip install --no-cache-dir torch torchvision torchaudio
 
 RUN pip install -r requirements.txt
