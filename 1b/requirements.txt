@@ -1,8 +1,0 @@
-langchain
-langchain_ollama
-langgraph
-langchain-community
-networkx
-scikit-learn
-pymupdf
-# [PDFs] → [Text Chunking] → [Embedding + Graph Construction] → [Vector Store + Graph] → [RAG with LLM]
