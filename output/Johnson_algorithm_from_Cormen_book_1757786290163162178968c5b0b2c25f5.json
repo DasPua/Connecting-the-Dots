@@ -1,0 +1,30 @@
+{
+    "title": "Chapter 25 All-Pairs Shortest Paths",
+    "outline": [
+        {
+            "level": "H1",
+            "text": "Preserving shortest paths by reweighting",
+            "page": 0
+        },
+        {
+            "level": "H2",
+            "text": "Preserving shortest paths by reweighting",
+            "page": 0
+        },
+        {
+            "level": "H1",
+            "text": "Producing nonnegative weights by reweighting",
+            "page": 1
+        },
+        {
+            "level": "H2",
+            "text": "JOHNSON(G)",
+            "page": 4
+        },
+        {
+            "level": "H1",
+            "text": "Computing all-pairs shortest paths",
+            "page": 4
+        }
+    ]
+}

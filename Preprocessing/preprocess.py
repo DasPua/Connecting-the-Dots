@@ -24,33 +24,33 @@ def process_pdf(pdf_path):
         page_arrays.append(arr)
     return page_arrays
 
-def convert_to_images(pdfs_path) :
+def convert_to_images(pdfs_path):
     images = []
     cnt = 0
     for pdf in os.listdir(os.path.abspath(pdfs_path)):
-        cnt+=1
+        cnt += 1
         images.append(process_pdf(os.path.join(os.path.abspath(pdfs_path), pdf)))
-        if cnt==10: break
+        if cnt == 10: 
+            break
     return images    
 
 def get_images_from_bounding_boxes(pdfs_path):
     images = convert_to_images(pdfs_path)
     results = []
     model_path = "../Models/tiny_best.pt"
-    model = YOLO(model_path, task = "detect")
+    model = YOLO(model_path, task="detect")
     for image in images:
-        predicts = model.predict(image, verbose=False, device = 'cpu', batch=64)
-        for i,predict in enumerate(predicts):
+        predicts = model.predict(image, verbose=False, device='cpu', batch=64)
+        for i, predict in enumerate(predicts):
             for box in predict.boxes:
-                x1,y1,x2,y2 = map(int,box.xyxy[0])
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
                 class_id = box.cls[0]
                 cropped_img = predict.orig_img[y1:y2, x1:x2].copy()
                 
                 information = {
-                    "class_id" : class_id,
-                    "final_image" : cropped_img,
-                    "page" : i
+                    "class_id": class_id,
+                    "final_image": cropped_img,
+                    "page": i
                 }
                 results.append(information)
     return results
-

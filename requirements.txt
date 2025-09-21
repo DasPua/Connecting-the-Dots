@@ -3,6 +3,11 @@ pymupdf
 pdf2image
 ultralytics
 opencv-python
-torch
-torchvision
-torchaudio
+# torch
+# torchvision
+# torchaudio
+Flask
+# torch==2.7.0
+# torchvision==0.22.0
+# torchaudio==2.7.0
+# --extra-index-url https://download.pytorch.org/whl/cu126
