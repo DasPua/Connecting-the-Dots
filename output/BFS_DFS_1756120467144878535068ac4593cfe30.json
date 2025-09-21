@@ -1,0 +1,25 @@
+{
+    "title": "Basic Graph Searching Algorithms 1. Breadth-First Search (BFS)",
+    "outline": [
+        {
+            "level": "H1",
+            "text": "Second Stage:",
+            "page": 3
+        },
+        {
+            "level": "H1",
+            "text": "Intuitive Idea:",
+            "page": 14
+        },
+        {
+            "level": "H2",
+            "text": "marked vertex",
+            "page": 16
+        },
+        {
+            "level": "H1",
+            "text": "marked vertex",
+            "page": 16
+        }
+    ]
+}

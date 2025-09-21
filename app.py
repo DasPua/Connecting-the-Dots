@@ -101,7 +101,6 @@ def process_pdf(pdf_dir, filename):
         return {"error": str(e)}
 
 # ---------- Routes ----------
-
 @app.route("/")
 def home():
     print("[INFO] Home route accessed.")
