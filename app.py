@@ -1,5 +1,9 @@
-from flask import Flask, request, jsonify, render_template
-from werkzeug.utils import secure_filename
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from starlette.requests import Request
 import os
 import time
 import json
@@ -13,16 +17,28 @@ UPLOAD_FOLDER = "./input"
 OUTPUT_FOLDER = "./output"
 MODEL_PATH = "./Models/ocr_models"
 
-app = Flask(__name__, template_folder="templates")
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Automatically choose device
+app = FastAPI(title="PDF Outline Extractor API", version="1.0")
+
+# Allow frontend access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # you can restrict this later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Optional templates for quick manual testing
+app.mount("/static", StaticFiles(directory="templates"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+# ---------- Initialize OCR ---------- #
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"[INFO] Using device: {DEVICE}")
 
-# Initialize EasyOCR Reader
 print("[INFO] Initializing EasyOCR Reader...")
 _reader = easyocr.Reader(
     ['en'],
@@ -33,19 +49,14 @@ _reader = easyocr.Reader(
 )
 print("[INFO] EasyOCR Reader initialized successfully.")
 
+
+# ---------- Core PDF Processing Function ---------- #
 def process_pdf(pdf_dir, filename):
     print("[STEP] Entering process_pdf")
     pdf_path = os.path.join(pdf_dir, filename)
-    print(f"[STEP] pdf_dir = {pdf_dir}")
-    print(f"[STEP] filename = {filename}")
     print(f"[STEP] computed pdf_path = {pdf_path}")
-    print(f"[STEP] does pdf_path exist? {os.path.exists(pdf_path)}")
-    print(f"[STEP] is pdf_path a file? {os.path.isfile(pdf_path)}")
-    print(f"[STEP] is pdf_dir a directory? {os.path.isdir(pdf_dir)}")
 
-    pdf_path = os.path.join(pdf_dir, filename)
     image_dictionary = get_images_from_bounding_boxes(pdf_path)
-
     print(f"[STEP] Number of extracted bounding box images: {len(image_dictionary)}")
 
     if not image_dictionary:
@@ -99,34 +110,35 @@ def process_pdf(pdf_dir, filename):
         "result": final_json
     }
 
-# ---------- Routes ----------
-@app.route("/")
-def home():
+
+# ---------- Routes ---------- #
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    """Optional HTML test page"""
     print("[INFO] Home route accessed.")
-    return render_template("index.html")
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.route("/extract_outline", methods=["POST"])
-def extract_outline():
+
+@app.post("/extract_outline")
+async def extract_outline(file: UploadFile = File(...)):
+    """Main endpoint for outline extraction"""
     print("[INFO] Extract outline endpoint hit.")
-    if "file" not in request.files:
-        print("[ERROR] No file part in the request.")
-        return jsonify({"error": "No file part"}), 400
 
-    file = request.files["file"]
-    if file.filename == "":
-        print("[ERROR] No selected file.")
-        return jsonify({"error": "No selected file"}), 400
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file uploaded")
 
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-    file.save(file_path)
+    filename = file.filename
+    file_path = os.path.join(UPLOAD_FOLDER, filename)
+
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+
     print(f"[INFO] File saved to: {file_path}")
 
-    result = process_pdf(app.config["UPLOAD_FOLDER"], filename)
-
+    result = process_pdf(UPLOAD_FOLDER, filename)
     if "error" in result:
-        print(f"[ERROR] {result['error']}")
-        return jsonify({"error": result["error"]}), 500
+        raise HTTPException(status_code=500, detail=result["error"])
 
     response_data = {
         "title": result["result"].get("title", None),
@@ -137,12 +149,12 @@ def extract_outline():
         "ocr_time": result["ocr_time"],
         "outline": result["result"].get("outline", [])
     }
-    print("[INFO] Returning response...")
-    return jsonify(response_data)
 
-# ---------- Main ----------
+    return JSONResponse(content=response_data)
+
+
+# ---------- Entry Point ---------- #
 if __name__ == "__main__":
-    print("[INFO] Starting Flask server at http://0.0.0.0:5000")
-    app.run(host="0.0.0.0", port=5000, debug=True)
-# import torch
-# print(torch.cuda.is_available())
+    import uvicorn
+    print("[INFO] Starting FastAPI server at http://0.0.0.0:8000")
+    uvicorn.run(app, host="0.0.0.0", port=8000)

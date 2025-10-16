@@ -414,6 +414,9 @@ FodyWeavers.xsd
 *.msm
 *.msp
 temp/ 
-output_files/ 
+output/ 
+input/
 venv/ 
 .ipynb_checkpoints/ 
+ganpatibapa/
+Models/
